@@ -76,5 +76,6 @@ for file in glob.glob("*.mp4") : #loop for each video in the folder
     
     if image is not None:
         print(image['gifv'])
+k=input("press close to exit")
 
     
