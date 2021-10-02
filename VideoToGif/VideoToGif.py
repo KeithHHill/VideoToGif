@@ -4,24 +4,27 @@
 import os
 from moviepy.editor import *
 import glob
-import ConfigParser
 import imgurpython
+import configparser
 
 
 # get items in the config file
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 myPath = os.path.dirname(os.path.abspath(__file__))
 
 config.read(myPath+"\config.ini")
+print (config.sections())
 input_path = config.get('gif','input_path')
 output_path = config.get('gif','output_path')
 output_fps = int(config.get('gif','fps'))
 resize = float(config.get('gif','resize'))
+imgur_enabled = config.get('imgur','enabled')
 
 # get imgur credentials and create a client
 client_id = config.get('imgur','client_id')
 client_secret = config.get('imgur','client_secret')
+
 ImgurClient = imgurpython.ImgurClient(client_id,client_secret)
 
 
@@ -72,9 +75,11 @@ for file in glob.glob("*.mp4") : #loop for each video in the folder
     new_gif = convertVideo(file) 
 
     # upload to imgur
-    image = uploadToImgur(new_gif)
-    
-    if image is not None:
-        print(image['gifv'])
+    if imgur_enabled in('Y','y') :
+        image = uploadToImgur(new_gif)
+        if image is not None:
+            print(image['link'])
+    else :
+        print('imgur upload not enabled')
 
     
